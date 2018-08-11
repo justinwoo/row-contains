@@ -1,0 +1,10 @@
+{
+  "name": "row-contains",
+  "set": "110818",
+  "source": "https://github.com/justinwoo/spacchetti.git",
+  "depends": [
+    "expect-inferred",
+    "prelude",
+    "typelevel-prelude"
+  ]
+}
