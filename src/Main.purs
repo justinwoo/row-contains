@@ -4,11 +4,9 @@ import Prelude
 
 import ExpectInferred (expectInferred)
 import Prim.RowList as RL
-import Type.Data.Boolean (class If)
-import Type.Data.Symbol as Symbol
 import Type.Prelude (BProxy(..), False, Proxy(..), SProxy(..), True, kind Boolean)
 
-class RowContains (label :: Symbol) (row :: # Type) (boolean :: Boolean) | label -> row boolean
+class RowContains (label :: Symbol) (row :: # Type) (boolean :: Boolean) | label row -> boolean
 
 instance rowContainsInst ::
   ( RL.RowToList row rl
@@ -19,13 +17,10 @@ class RowContainsImpl (label :: Symbol) (rl :: RL.RowList) (boolean :: Boolean) 
 
 instance rowContainsImplNil :: RowContainsImpl label RL.Nil False
 
-instance rowContainsImplCons ::
-  ( Symbol.Equals label name test
-  , If test
-      (BProxy True)
-      (BProxy boolean')
-      (BProxy boolean)
-  , RowContainsImpl label tail boolean'
+else instance rowContainsImplMatch :: RowContainsImpl label (RL.Cons label ty tail) True
+
+else instance rowContainsImplNoMatch ::
+  ( RowContainsImpl label tail boolean
   ) => RowContainsImpl label (RL.Cons name ty tail) boolean
 
 rowContains :: forall label proxy row result. RowContains label row result => SProxy label -> proxy row -> BProxy result
